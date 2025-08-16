@@ -2,10 +2,18 @@ import streamlit as st
 import pandas as pd
 import time
 from PIL import Image
+import matplotlib.pyplot as plt
 from typing import Dict, Any, Optional, Tuple, List
 import plotly.express as px  # Added for new plots
 import plotly.graph_objects as go  # Added for new plots
 import numpy as np # Import numpy for isfinite check
+from services.data_fetcher import get_stock_data, fetch_stock_data
+from services.news_fetcher import fetch_stock_news
+from services.technical_analysis import add_technical_indicators, compute_rsi, calculate_risk, get_advice
+from services.lstm_forecasting import prepare_model, predict_stocks
+from services.gemini_chatbot import get_general_financial_advice, calculate_savings_goal
+from services.portfolio_manager import get_strategy, check_alerts, get_alternative_options
+from services.macro_data import get_mock_macro_features
 
 # --- IMPT: Error Handling for logic.py ---
 # Ensure your logic.py file is in the same directory as this app.py

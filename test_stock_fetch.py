@@ -1,22 +1,25 @@
-import time
-from logic import fetch_stock_data
+from services.data_fetcher import fetch_stock_data, get_stock_data
+import pytest
 
-# Test stock symbols
-symbols = ['AAPL', 'MSFT', 'GOOGL']
+def test_fetch_valid_stock():
+    """Test fetching data for a valid stock symbol"""
+    data = fetch_stock_data("AAPL")
+    assert data is not None
+    assert not data.empty
+    assert "AAPL" in data.columns
+    assert len(data) > 50  # More lenient check
 
-print("Testing stock data fetching...")
-for symbol in symbols:
-    print(f"\nFetching data for {symbol}...")
-    start_time = time.time()
-    data = fetch_stock_data(symbol)
-    elapsed = time.time() - start_time
-    
-    if data is not None and not data.empty:
-        print(f"✅ Successfully fetched {symbol} in {elapsed:.2f} seconds")
-        print(f"Data shape: {data.shape}")
-        print(f"Date range: {data.index[0].date()} to {data.index[-1].date()}")
-        print(f"Latest price: {data.iloc[-1, 0]:.2f}")
-    else:
-        print(f"❌ Failed to fetch data for {symbol}")
+def test_fetch_multiple_stocks():
+    """Test fetching multiple stocks at once"""
+    # Use get_stock_data which is designed for multiple symbols
+    data = get_stock_data(["AAPL", "MSFT"])
+    assert data is not None
+    assert not data.empty
+    assert "AAPL" in data.columns
+    assert "MSFT" in data.columns
+    assert len(data) > 50  # More lenient check
 
-print("\nTest completed.")
+def test_fetch_invalid_stock():
+    """Test handling of invalid stock symbol"""
+    data = fetch_stock_data("INVALID_SYMBOL_123")
+    assert data is None
